@@ -1,6 +1,6 @@
 package com.eugene.sumarry.zookeeper.client.starter.anno;
 
-import com.eugene.sumarry.zookeeper.client.starter.register.ZookeeperClientRegistrar;
+import com.eugene.sumarry.zookeeper.client.starter.utils.SpringContextHolder;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.ElementType;
@@ -10,8 +10,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@EnableZookeeperClientListeners
-@EnableSpringContext
-@Import({ ZookeeperClientRegistrar.class})
-public @interface EnableZookeeperClient {
+@Import({ SpringContextHolder.class})
+public @interface EnableSpringContext {
 }

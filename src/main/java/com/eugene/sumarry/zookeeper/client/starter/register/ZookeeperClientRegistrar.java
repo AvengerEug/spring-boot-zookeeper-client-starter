@@ -1,7 +1,7 @@
 package com.eugene.sumarry.zookeeper.client.starter.register;
 
 import com.eugene.sumarry.zookeeper.client.starter.anno.EnableZookeeperClient;
-import com.eugene.sumarry.zookeeper.client.starter.basic.ZookeeperClient;
+import com.eugene.sumarry.zookeeper.client.starter.common.ZookeeperClientFactoryBean;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
@@ -10,15 +10,15 @@ import org.springframework.core.type.AnnotationMetadata;
 
 public class ZookeeperClientRegistrar implements ImportBeanDefinitionRegistrar {
 
-    private final static String ZOOKEEPER_CLIENT_BEAN = "zookeeperClient";
-
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         if (importingClassMetadata.hasAnnotation(EnableZookeeperClient.class.getName())) {
             GenericBeanDefinition genericBeanDefinition = new GenericBeanDefinition();
-            genericBeanDefinition.setBeanClass(ZookeeperClient.class);
+            genericBeanDefinition.setBeanClass(ZookeeperClientFactoryBean.class);
             genericBeanDefinition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+            // 保证zookeeperClient不使用spring来自动装配
+            genericBeanDefinition.getPropertyValues().add("zookeeperClient", null);
 
-            registry.registerBeanDefinition(ZOOKEEPER_CLIENT_BEAN, genericBeanDefinition);
+            registry.registerBeanDefinition("zookeeperClientProcessor", genericBeanDefinition);
         }
     }
 }

@@ -1,1 +1,3 @@
-# org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.eugene.sumarry.zookeeper.client.starter.autoconfig.ZookeeperAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.eugene.sumarry.zookeeper.client.starter.autoconfig.ZookeeperAutoConfiguration
+
