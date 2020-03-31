@@ -22,5 +22,5 @@ import java.lang.annotation.Target;
         ZKClientInitListener.class,
         CuratorClientInitListener.class
 })
-public @interface EnableZookeeperClientListeners {
+@interface EnableZookeeperClientListeners {
 }

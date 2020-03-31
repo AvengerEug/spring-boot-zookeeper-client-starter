@@ -62,7 +62,8 @@ public class CuratorClientInitListener implements ApplicationListener<ZookeeperC
 
                 CuratorFramework curatorFramework = (CuratorFramework) newClientMethod.invoke(instance, validAndGet(Constants.ZOOKEEPER_HOST, String.class), retryNTimesObject);
                 CuratorClient curatorClient = new CuratorClient();
-                curatorClient.setCuratorFramework(curatorFramework);
+                curatorClient.setClient(curatorFramework);
+                curatorClient.afterPropertiesSet();
 
                 processor.setZookeeperClient(curatorClient);
             } catch (ClassNotFoundException e) {

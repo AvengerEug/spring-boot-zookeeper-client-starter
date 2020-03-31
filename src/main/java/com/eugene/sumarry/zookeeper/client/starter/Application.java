@@ -6,14 +6,18 @@ import com.eugene.sumarry.zookeeper.client.starter.utils.SpringContextHolder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.io.IOException;
+
 @SpringBootApplication
 @EnableZookeeperClient
 public class Application {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         SpringApplication.run(Application.class);
 
-        System.out.println(SpringContextHolder.getBean(ZookeeperClient.class));
+        SpringContextHolder.getBean(ZookeeperClient.class).createEphNode("/pathe", "test");
+
+        System.in.read();
     }
 }

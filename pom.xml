@@ -66,6 +66,15 @@
             <version>2.10.0</version>
             <optional>true</optional>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.101tec/zkclient -->
+        <dependency>
+            <groupId>com.101tec</groupId>
+            <artifactId>zkclient</artifactId>
+            <version>0.10</version>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
 </project>
