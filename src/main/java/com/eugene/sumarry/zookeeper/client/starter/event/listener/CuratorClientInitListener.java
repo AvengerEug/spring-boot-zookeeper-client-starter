@@ -4,6 +4,7 @@ import com.eugene.sumarry.zookeeper.client.starter.common.Constants;
 import com.eugene.sumarry.zookeeper.client.starter.common.CuratorClient;
 import com.eugene.sumarry.zookeeper.client.starter.common.ZookeeperClientFactoryBean;
 import com.eugene.sumarry.zookeeper.client.starter.event.ZookeeperClientInitEvent;
+import com.eugene.sumarry.zookeeper.client.starter.utils.ValidataUtil;
 import org.apache.curator.framework.CuratorFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,21 +53,39 @@ public class CuratorClientInitListener implements ApplicationListener<ZookeeperC
                 Class retryNTimesClass = Class.forName(Constants.RETRY_NUMBER_TIMES);
                 Constructor retryNTimesConstructor = retryNTimesClass.getDeclaredConstructor(int.class, int.class);
 
-                int retryTime = validAndGet(Constants.ZOOKEEPER_CURATOR_RETRY_TIME, int.class);
+                String zookeeperHost = ValidataUtil.validAndGet(
+                        environment,
+                        Constants.ZOOKEEPER_HOST,
+                        String.class);
 
-                int sleepMsBetweenRetries = validAndGet(Constants.ZOOKEEPER_CURATOR_SLEEP_MS_BETWEEN_RETRIES, int.class);
+                int retryTime = ValidataUtil.validAndGet(
+                        environment,
+                        Constants.ZOOKEEPER_CURATOR_RETRY_TIME,
+                        int.class);
+
+                int sleepMsBetweenRetries = ValidataUtil.validAndGet(
+                        environment,
+                        Constants.ZOOKEEPER_CURATOR_SLEEP_MS_BETWEEN_RETRIES,
+                        int.class);
 
                 Object retryNTimesObject = retryNTimesConstructor.newInstance(retryTime, sleepMsBetweenRetries);
 
                 Method newClientMethod = clazz.getMethod(INITIALIZE_METHOD, String.class, Class.forName(Constants.RETRY_POLICY));
 
-                CuratorFramework curatorFramework = (CuratorFramework) newClientMethod.invoke(instance, validAndGet(Constants.ZOOKEEPER_HOST, String.class), retryNTimesObject);
+                CuratorFramework curatorFramework = (CuratorFramework) newClientMethod.invoke(
+                        instance,
+                        zookeeperHost,
+                        retryNTimesObject);
                 CuratorClient curatorClient = new CuratorClient();
-                curatorClient.setCuratorFramework(curatorFramework);
+                curatorClient.setClient(curatorFramework);
+                curatorClient.afterPropertiesSet(null);
 
                 processor.setZookeeperClient(curatorClient);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                logger.warn("Not found {} class, " +
+                        "if you want to initialize curator client then " +
+                                "you should import curator-framework, curator-recipes and curator-client dependency",
+                        Constants.CURATOR_FRAMEWORK_FACTORY_CLASS);
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             } catch (InstantiationException e) {
@@ -79,10 +98,5 @@ public class CuratorClientInitListener implements ApplicationListener<ZookeeperC
         }
     }
 
-    private <T> T validAndGet(String key, Class<T> clazz) {
-        T retryTime = environment.getProperty(key, clazz);
-        Assert.notNull(retryTime, "Please config " + key + " attribute from application.yml or application.properties");
-        return retryTime;
-    }
 
 }

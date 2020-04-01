@@ -6,7 +6,6 @@ import org.springframework.context.ApplicationContextAware;
 
 public class SpringContextHolder implements ApplicationContextAware {
 
-
     private static ApplicationContext applicationContext;
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -17,7 +16,6 @@ public class SpringContextHolder implements ApplicationContextAware {
     public static ApplicationContext getApplicationContext() {
         return applicationContext;
     }
-
 
     public static <T> T getBean(Class<T> clazz) {
         return getApplicationContext().getBean(clazz);
@@ -34,4 +32,5 @@ public class SpringContextHolder implements ApplicationContextAware {
     public static <T> T getBean(Class clz, Object ...args) {
         return (T)getApplicationContext().getBean(clz, args);
     }
+
 }

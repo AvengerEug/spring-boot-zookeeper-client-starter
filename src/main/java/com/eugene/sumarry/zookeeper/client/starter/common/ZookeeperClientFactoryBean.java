@@ -4,12 +4,13 @@ import com.eugene.sumarry.zookeeper.client.starter.event.ZookeeperClientInitEven
 import com.eugene.sumarry.zookeeper.client.starter.utils.SpringContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.env.Environment;
 import org.springframework.util.ObjectUtils;
 
-public class ZookeeperClientFactoryBean implements InitializingBean, FactoryBean<ZookeeperClient> {
+public class ZookeeperClientFactoryBean implements InitializingBean, FactoryBean<ZookeeperClient>, DisposableBean {
 
     private final Logger logger = LoggerFactory.getLogger(ZookeeperClientFactoryBean.class);
 
@@ -52,6 +53,14 @@ public class ZookeeperClientFactoryBean implements InitializingBean, FactoryBean
             logger.error("No zookeeper client found, initialize failed.");
             throw new RuntimeException("No zookeeper client found, initialize failed.");
         }
+
+        if (logger.isInfoEnabled()) {
+            logger.info("Current zookeeper client is {}", zookeeperClient);
+        }
     }
 
+    @Override
+    public void destroy() throws Exception {
+        zookeeperClient.close();
+    }
 }

@@ -1,7 +1,23 @@
-zookeeper:
-  host: 192.168.111.146:2181
-  curator:
-    sleepMsBetweenRetries: 5000
-    retryTime: 2
-  zk-client:
-    sessionTime: 5000
+## Curator client配置
+#zookeeper:
+#  host: 192.168.111.146:2181
+#  curator:
+#    sleepMsBetweenRetries: 5000
+#    retryTime: 2
+#  zk-client:
+#    sessionTime: 5000
+
+## ZkClient配置
+#zookeeper:
+#  host: 192.168.111.146:2181
+#  zk-client:
+#    session-time: 10000
+#    connection-timeout: 10000
+#    zk-serializer-class: org.I0Itec.zkclient.serialize.SerializableSerializer
+
+## Native client配置
+#zookeeper:
+#  host: 192.168.111.146:2181
+#  native-client:
+#    session-time: 10000
+#    watcher-class: 这里需要一个实现了org.apache.zookeeper.Watcher接口的类
