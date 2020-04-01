@@ -17,7 +17,6 @@ import org.springframework.util.ObjectUtils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-
 @Order(2)
 public class ZKClientInitListener implements ApplicationListener<ZookeeperClientInitEvent> {
 
