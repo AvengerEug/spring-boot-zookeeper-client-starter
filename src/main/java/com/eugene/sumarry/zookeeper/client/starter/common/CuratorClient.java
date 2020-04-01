@@ -96,21 +96,17 @@ public class CuratorClient extends ZookeeperClientAdapter<CuratorFramework> {
     }
 
     // -------------------Watch part
-    public void watchDesignationNode(String path, CuratorWatcher curatorWatcher) throws Exception {
+    public void watchDesignationNodeUsingCurator(String path, CuratorWatcher curatorWatcher) throws Exception {
         getGetDataBuilder().usingWatcher(curatorWatcher).forPath(path);
     }
 
-    public void watchDesignationNode(String path, Watcher watcher) throws Exception {
-        getGetDataBuilder().usingWatcher(watcher).forPath(path);
-    }
-
-    public void watchChildrenNode(String parentPath, PathChildrenCacheListener pathChildrenCacheListener) throws Exception {
+    public void watchChildrenNodeUsingCurator(String parentPath, PathChildrenCacheListener pathChildrenCacheListener) throws Exception {
         PathChildrenCache pathChildrenCache = new PathChildrenCache(this.getClient(), parentPath, true);
         pathChildrenCache.getListenable().addListener(pathChildrenCacheListener);
         pathChildrenCache.start();
     }
 
-    public void watchTreeCacheNode(String parentPath, TreeCacheListener treeCacheListener) throws Exception {
+    public void watchTreeCacheNodeUsingCurator(String parentPath, TreeCacheListener treeCacheListener) throws Exception {
         TreeCache treeCache = new TreeCache(getClient(), parentPath);
         treeCache.getListenable().addListener(treeCacheListener);
         treeCache.start();

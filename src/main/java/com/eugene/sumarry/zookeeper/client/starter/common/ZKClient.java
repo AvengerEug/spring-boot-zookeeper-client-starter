@@ -2,11 +2,12 @@ package com.eugene.sumarry.zookeeper.client.starter.common;
 
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.IZkDataListener;
+import org.I0Itec.zkclient.ZkClient;
 import org.apache.zookeeper.data.Stat;
 
 import java.util.List;
 
-public class ZKClient extends ZookeeperClientAdapter<org.I0Itec.zkclient.ZkClient> {
+public class ZKClient extends ZookeeperClientAdapter<ZkClient> {
 
     public String createNode(String path) throws Exception {
         getClient().writeData(path, "".getBytes());
@@ -66,11 +67,11 @@ public class ZKClient extends ZookeeperClientAdapter<org.I0Itec.zkclient.ZkClien
         return getClient().getChildren(path);
     }
 
-    public void watchDesignationNode(String path, IZkDataListener iZkDataListener) throws Exception {
+    public void watchDesignationNodeUsingZKClient(String path, IZkDataListener iZkDataListener) throws Exception {
         getClient().subscribeDataChanges(path, iZkDataListener);
     }
 
-    public void watchChildrenNode(String parentPath, IZkChildListener iZkChildListener) throws Exception {
+    public void watchChildrenNodeUsingZKClient(String parentPath, IZkChildListener iZkChildListener) throws Exception {
         getClient().subscribeChildChanges(parentPath, iZkChildListener);
     }
 

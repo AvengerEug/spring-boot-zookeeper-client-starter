@@ -22,6 +22,7 @@
 
 ## 四、开发中遇到的问题
 1. ZookeeperClientFactoryBean循环依赖
+
 2. 在初始化ZKClientlistener时，因为listener是@Import注解导入的，所以它会被spring当成一个bean出来。最终会去校验所以被@Bean注解标识的方法，会去获取所有的`参数值、返回值`，若返回值的class path在classpath中找不到的话，会抛出`'java.lang.NoClassDefFoundError' exception.`。这其实就是jdk反射获取
    方法时抛出的异常，但是被spring捕获了。如下: 在获取initZKClient()方法的返回值时，若当前的class
    path中无ZkClient的依赖，则会报错，解决方法就是把方法返回值改成void，传入引用进去， 如下述的第二段java代码(核心就是不要让jdk去校验方法参数和返回值)
@@ -206,6 +207,30 @@
        
        }
     ```
+   
+3. `ZookeeperClient`接口中的抽象出来的重载方法中若参数名包含其他jar包的类型, 编译会报错。 eg:
+
+   ```java
+   default void watchChildrenNode(String parentPath, IZkChildListener iZkChildListener) throws Exception {
+   
+   }
+   
+   default void watchChildrenNode(String parentPath, Watcher watcher) throws Exception {
+   
+   }
+   ```
+
+   当在使用**zookeeperClient.watchChildrenNode**方法时，若当前的项目只添加了原生客户端的依赖，依赖如下:
+
+   ```xml
+   <dependency>
+       <groupId>org.apache.zookeeper</groupId>
+       <artifactId>zookeeper</artifactId>
+       <version>3.4.6</version>
+   </dependency>
+   ```
+
+   那么项目启动不了，会报`org.I0Itec.zkclient.IZkChildListener`找不到的错误。
 
 
 ## 五、约定
@@ -366,3 +391,29 @@
 ### 6.4 注意
 
 * **同上述约定，三种客户端的加载顺序为`curator`, `zkclient`, `native client`**。若上述的依赖包都存在，则会按照如下顺序初始化客户端
+
+* 因为springboot中内嵌了`sl4j`的绑定器和具体的实现类，而zookeeper原生客户端的jar包也包含了`sl4j`。所以建议修改zookeeper的jar包依赖如下:
+
+  ```xml
+  <dependency>
+      <groupId>org.apache.zookeeper</groupId>
+      <artifactId>zookeeper</artifactId>
+      <version>3.4.6</version>
+      <exclusions>
+          <exclusion>
+              <artifactId>log4j</artifactId>
+              <groupId>log4j</groupId>
+          </exclusion>
+          <exclusion>
+              <artifactId>slf4j-api</artifactId>
+              <groupId>org.slf4j</groupId>
+          </exclusion>
+          <exclusion>
+              <artifactId>slf4j-log4j12</artifactId>
+              <groupId>org.slf4j</groupId>
+          </exclusion>
+      </exclusions>
+  </dependency>
+  ```
+
+  

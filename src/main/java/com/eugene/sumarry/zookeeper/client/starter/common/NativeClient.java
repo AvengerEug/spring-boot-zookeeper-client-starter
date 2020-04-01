@@ -9,6 +9,7 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
+
 public class NativeClient extends ZookeeperClientAdapter<ZooKeeper> {
 
 
@@ -61,11 +62,11 @@ public class NativeClient extends ZookeeperClientAdapter<ZooKeeper> {
         return getClient().getChildren(path, false);
     }
 
-    public void watchDesignationNode(String path, Watcher watcher) throws Exception {
+    public void watchDesignationNodeUsingNative(String path, Watcher watcher) throws Exception {
         getClient().getData(path, watcher, null);
     }
 
-    public void watchChildrenNode(String parentPath, Watcher watcher) throws Exception {
+    public void watchChildrenNodeUsingNative(String parentPath, Watcher watcher) throws Exception {
         getClient().getChildren(parentPath, watcher);
     }
 

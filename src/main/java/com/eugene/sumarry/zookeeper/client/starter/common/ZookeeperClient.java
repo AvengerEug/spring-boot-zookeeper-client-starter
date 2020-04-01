@@ -39,35 +39,33 @@ public interface ZookeeperClient {
     List<String> findChildren(String path) throws Exception;
 
     // Watch part
-    default void watchDesignationNode(String path, CuratorWatcher curatorWatcher) throws Exception {
+    default void watchDesignationNodeUsingCurator(String path, CuratorWatcher curatorWatcher) throws Exception {
 
     }
 
-    default void watchDesignationNode(String path, Watcher watcher) throws Exception {
+    default void watchTreeCacheNodeUsingCurator(String parentPath, TreeCacheListener treeCacheListener) throws Exception {
 
     }
 
-
-    default void watchChildrenNode(String parentPath, PathChildrenCacheListener pathChildrenCacheListener) throws Exception {
-
-    }
-
-    default void watchDesignationNode(String path, IZkDataListener iZkDataListener) throws Exception {
+    default void watchChildrenNodeUsingCurator(String parentPath, PathChildrenCacheListener pathChildrenCacheListener) throws Exception {
 
     }
 
-    default void watchChildrenNode(String parentPath, IZkChildListener iZkChildListener) throws Exception {
+    default void watchDesignationNodeUsingZKClient(String path, IZkDataListener iZkDataListener) throws Exception {
 
     }
 
-    default void watchChildrenNode(String parentPath, Watcher watcher) throws Exception {
+    default void watchChildrenNodeUsingZKClient(String parentPath, IZkChildListener iZkChildListener) throws Exception {
 
     }
 
-    default void watchTreeCacheNode(String parentPath, TreeCacheListener treeCacheListener) throws Exception {
+    default void watchChildrenNodeUsingNative(String parentPath, Watcher watcher) throws Exception {
 
     }
 
+    default void watchDesignationNodeUsingNative(String path, Watcher watcher) throws Exception {
+
+    }
 
     // Other part
     default <T> T checkExist(String path) throws Exception {
