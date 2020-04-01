@@ -9,9 +9,7 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
-
 public class NativeClient extends ZookeeperClientAdapter<ZooKeeper> {
-
 
     private String createBaseNode(String path, String content, CreateMode createMode) throws Exception {
         Assert.notNull(content, "Node content not allow null");

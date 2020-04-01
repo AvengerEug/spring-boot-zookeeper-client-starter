@@ -17,7 +17,6 @@ public abstract class ZookeeperClientAdapter<T> implements ZookeeperClient {
     public abstract void deleteNode(String path) throws Exception;
 
     public void afterPropertiesSet(Object object) {
-
     }
 
 }
