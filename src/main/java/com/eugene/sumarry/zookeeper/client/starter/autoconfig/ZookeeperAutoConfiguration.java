@@ -11,6 +11,8 @@ public class ZookeeperAutoConfiguration {
 
     private ZKClient zkClient = new ZKClient();
 
+    private NativeClient nativeClient = new NativeClient();
+
     public static class Curator {
         private int sleepMsBetweenRetries = 10000;
         private int retryTime = 2;
@@ -35,12 +37,53 @@ public class ZookeeperAutoConfiguration {
     public static class ZKClient {
         private int sessionTime = 10000;
 
+        private int connectionTimeout = 10000;
+
+        private String zkSerializerClass;
+
         public int getSessionTime() {
             return sessionTime;
         }
 
         public void setSessionTime(int sessionTime) {
             this.sessionTime = sessionTime;
+        }
+
+        public int getConnectionTimeout() {
+            return connectionTimeout;
+        }
+
+        public void setConnectionTimeout(int connectionTimeout) {
+            this.connectionTimeout = connectionTimeout;
+        }
+
+        public String getZkSerializerClass() {
+            return zkSerializerClass;
+        }
+
+        public void setZkSerializerClass(String zkSerializerClass) {
+            this.zkSerializerClass = zkSerializerClass;
+        }
+    }
+
+    public static class NativeClient {
+        private int sessionTime = 10000;
+        private String watcherClass;
+
+        public int getSessionTime() {
+            return sessionTime;
+        }
+
+        public void setSessionTime(int sessionTime) {
+            this.sessionTime = sessionTime;
+        }
+
+        public String getWatcherClass() {
+            return watcherClass;
+        }
+
+        public void setWatcherClass(String watcherClass) {
+            this.watcherClass = watcherClass;
         }
     }
 
@@ -58,5 +101,9 @@ public class ZookeeperAutoConfiguration {
 
     public ZKClient getZkClient() {
         return this.zkClient;
+    }
+
+    public NativeClient getNativeClient() {
+        return nativeClient;
     }
 }

@@ -14,7 +14,18 @@ public interface Constants {
 
     String ZOOKEEPER_HOST = "zookeeper.host";
 
-    String ZOOKEEPER_CURATOR_RETRY_TIME = "zookeeper.curator.retryTime";
+    // Curator client parameters
+    String ZOOKEEPER_CURATOR_RETRY_TIME = "zookeeper.curator.retry-time";
 
-    String ZOOKEEPER_CURATOR_SLEEP_MS_BETWEEN_RETRIES = "zookeeper.curator.sleepMsBetweenRetries";
+    String ZOOKEEPER_CURATOR_SLEEP_MS_BETWEEN_RETRIES = "zookeeper.curator.sleep-ms-between-retries";
+
+    // ZKClient parameters
+    String ZOOKEEPER_ZK_CLIENT_CONNECTION_TIME_OUT = "zookeeper.zk-client.connection-timeout";
+    String ZOOKEEPER_ZK_CLIENT_SESSION_TIME = "zookeeper.zk-client.session-time";
+    String ZOOKEEPER_ZK_SERIALIZER_CLASS = "zookeeper.zk-client.zk-serializer-class";
+
+    // Native client parameters
+    String ZOOKEEPER_NATIVE_CLIENT_SESSTION_TIME_OUT = "zookeeper.native-client.session-time";
+    String ZOOKEEPER_NATIVE_WATCHER_CLASS = "zookeeper.native-client.watcher-class";
+
 }
