@@ -5,16 +5,30 @@
 1. 使用工厂、观察者设计模式，根据指定加载顺序和yml配置生成可用的zookeeper客户端
 2. 抽象出zookeeper的一些通用基本操作: 增加节点、删除节点、给指定节点、孩子节点添加监听器
 
-## 二、特点
+## 二、使用到的技术点
+
+* **Spring 事件驱动模型、ImportBeanDefinitionRegistrar、FactoryBean、InitializingBean、DisposableBean**
+
+* **通过BeanDefinition设置bean自动装配的类型以及手动不需要自动装配的属性**
+
+* **消费者设计模式、适配器设计模式**
+
+* **jdk1.8接口实现默认方法特性**
+
+* **SpringBoot自动装配、SPI特性**
+
+  ****
+
+  ****
 
 ## 三、缺点
-* 实例化客户端单一，每个客户端目前只提供一种初始化策略。后续若版本升级，可添加策略者模式，根据用户配置的参数来决定使用哪种初始化api，具体初始化策略api详细如下:
+* 实例化客户端单一，每个客户端目前只提供一种初始化策略。后续若版本升级，可添加策略者模式，根据用户配置的参数来决定使用哪种初始化api。目前初始化策略api详细如下:
 
   |                  客户端类型                   |                        使用初始化api                         | 备注 |
   | :-------------------------------------------: | :----------------------------------------------------------: | :--: |
-  | org.apache.curator.framework.CuratorFramework | org.apache.curator.framework.CuratorFrameworkFactory#newClient(String connectString, RetryPolicy retryPolicy) |      |
-  |         org.I0Itec.zkclient.ZkClient          | org.I0Itec.zkclient.ZkClient#ZkClient(String zkServers, int sessionTimeout, int connectionTimeout, ZkSerializer zkSerializer) |      |
-  |        org.apache.zookeeper.ZooKeeper         | org.apache.zookeeper.ZooKeeper#ZooKeeper(String connectString, int sessionTimeout, Watcher watcher) |      |
+  | org.apache.curator.framework.CuratorFramework | org.apache.curator.framework.CuratorFrameworkFactory#newClient(String connectString, RetryPolicy retryPolicy) |  无  |
+  |         org.I0Itec.zkclient.ZkClient          | org.I0Itec.zkclient.ZkClient#ZkClient(String zkServers, int sessionTimeout, int connectionTimeout, ZkSerializer zkSerializer) |  无  |
+  |        org.apache.zookeeper.ZooKeeper         | org.apache.zookeeper.ZooKeeper#ZooKeeper(String connectString, int sessionTimeout, Watcher watcher) |  无  |
 
   
 
@@ -23,9 +37,7 @@
 ## 四、开发中遇到的问题
 1. ZookeeperClientFactoryBean循环依赖
 
-2. 在初始化ZKClientlistener时，因为listener是@Import注解导入的，所以它会被spring当成一个bean出来。最终会去校验所以被@Bean注解标识的方法，会去获取所有的`参数值、返回值`，若返回值的class path在classpath中找不到的话，会抛出`'java.lang.NoClassDefFoundError' exception.`。这其实就是jdk反射获取
-   方法时抛出的异常，但是被spring捕获了。如下: 在获取initZKClient()方法的返回值时，若当前的class
-   path中无ZkClient的依赖，则会报错，解决方法就是把方法返回值改成void，传入引用进去， 如下述的第二段java代码(核心就是不要让jdk去校验方法参数和返回值)
+2. 在初始化ZKClientlistener时，因为listener是@Import注解导入的，所以它会被spring当成一个bean处理，会去校验所以被@Bean注解标识的方法，进而会去获取所有的`参数值、返回值`，若返回值的类型在classpath中找不到会抛出`'java.lang.NoClassDefFoundError' exception.`。这其实就是jdk反射获取方法时抛出的异常。eg如下: 在`ZKClientInitListener`中获取`initZKClient()`方法时，当检测到方法的返回值是`ZkClient`, 若当前的classpath中无`ZkClient`的依赖，则会报上述错误信息。解决方法就是把方法返回值改成void，传入引用进去， 如下述的第二段java代码的`initZKClient`方法核心就是不要让jdk去校验方法参数和返回值)
    
    ```java
     @Order(2)
@@ -208,7 +220,7 @@
        }
     ```
    
-3. `ZookeeperClient`接口中的抽象出来的重载方法中若参数名包含其他jar包的类型, 编译会报错。 eg:
+3. `ZookeeperClient`接口中的抽象出来的重载方法中若参数名包含其他jar包的类型时，若使用其中一个重载方法运行程序，编译会报错。 eg:
 
    ```java
    default void watchChildrenNode(String parentPath, IZkChildListener iZkChildListener) throws Exception {
@@ -255,6 +267,7 @@
 1. 添加`curator client`和`spring-boot-zookeeper-client-starter`的依赖
 
    ```xml
+   <!-- 添加至repositories标签中 -->
    <dependency>
        <groupId>com.eugene.sumarry</groupId>
        <artifactId>spring-boot-zookeeper-client-starter</artifactId>
@@ -278,6 +291,15 @@
        <artifactId>curator-client</artifactId>
        <version>2.10.0</version>
    </dependency>
+   
+   <!-- 添加至project标签中 -->
+   <repositories>
+       <repository>
+           <id>github</id>
+           <name>avengerEug</name>
+           <url>https://raw.github.com/AvengerEug/maven-repository/master</url>
+       </repository>
+   </repositories>
    ```
 
 2. yml或properties文件中添加如下配置:
@@ -286,12 +308,10 @@
    zookeeper:
      host: 192.168.111.146:2181
      curator:
-       sleepMsBetweenRetries: 5000
-       retryTime: 2
-     zk-client:
-       sessionTime: 5000
+       sleep-ms-between-retries: 5000
+       retry-time: 2
    ```
-
+   
 3. spring boot入口中添加如下注解
 
    ```java
@@ -303,6 +323,7 @@
 1. 添加`ZkClient`和`spring-boot-zookeeper-client-starter`的依赖
 
    ```xml
+   <!-- 添加至repositories标签中 -->
    <dependency>
        <groupId>com.eugene.sumarry</groupId>
        <artifactId>spring-boot-zookeeper-client-starter</artifactId>
@@ -314,6 +335,15 @@
        <artifactId>zkclient</artifactId>
        <version>0.10</version>
    </dependency>	
+   
+   <!-- 添加至project标签中 -->
+   <repositories>
+       <repository>
+           <id>github</id>
+           <name>avengerEug</name>
+           <url>https://raw.github.com/AvengerEug/maven-repository/master</url>
+       </repository>
+   </repositories>
    ```
 
 2. yml或properties文件中添加如下配置:
@@ -338,6 +368,7 @@
 1. 添加`zookeeper`和`spring-boot-zookeeper-client-starter`的依赖
 
    ```xml
+   <!-- 添加至repositories标签中 -->
    <dependency>
        <groupId>com.eugene.sumarry</groupId>
        <artifactId>spring-boot-zookeeper-client-starter</artifactId>
@@ -349,9 +380,18 @@
        <artifactId>zookeeper</artifactId>
        <version>3.4.6</version>
    </dependency>
+   
+   <!-- 添加至project标签中 -->
+   <repositories>
+       <repository>
+           <id>github</id>
+           <name>avengerEug</name>
+           <url>https://raw.github.com/AvengerEug/maven-repository/master</url>
+       </repository>
+   </repositories>
    ```
 
-2. 新建`ZookeeperInitWatcher.java`类，并实现`org.apache.zookeeper.Watcher`接口。如下:
+2. 新建`ZookeeperInitWatcher.java`类，并实现`org.apache.zookeeper.Watcher`接口作为默认监听器。如下:
 
    ```java
    package com.eugene.sumarry.springbootstudy.watch;
@@ -392,9 +432,14 @@
 
 * **同上述约定，三种客户端的加载顺序为`curator`, `zkclient`, `native client`**。若上述的依赖包都存在，则会按照如下顺序初始化客户端
 
-* 因为springboot中内嵌了`sl4j`的绑定器和具体的实现类，而zookeeper原生客户端的jar包也包含了`sl4j`。所以建议修改zookeeper的jar包依赖如下:
+  ```txt
+  curator、zkClient、zookeeper原生客户端
+  ```
+
+* 因为springboot中内嵌了`sl4j`的绑定器和具体的日志实现类(`log4j`)，而zookeeper原生客户端的jar包也包含了`sl4j`和`log4j`。所以建议修改zookeeper的jar包依赖如下(去除zookeeper jar包中依赖的日志体系):
 
   ```xml
+  <!-- 添加至repositories标签中 -->
   <dependency>
       <groupId>org.apache.zookeeper</groupId>
       <artifactId>zookeeper</artifactId>
@@ -414,6 +459,6 @@
           </exclusion>
       </exclusions>
   </dependency>
-  ```
-
+```
+  
   

@@ -17,7 +17,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-
 @Order(1)
 public class CuratorClientInitListener implements ApplicationListener<ZookeeperClientInitEvent> {
 
@@ -97,6 +96,4 @@ public class CuratorClientInitListener implements ApplicationListener<ZookeeperC
             }
         }
     }
-
-
 }

@@ -2,10 +2,8 @@
 #zookeeper:
 #  host: 192.168.111.146:2181
 #  curator:
-#    sleepMsBetweenRetries: 5000
-#    retryTime: 2
-#  zk-client:
-#    sessionTime: 5000
+#    sleep-ms-between-retries: 5000
+#    retry-time: 2
 
 ## ZkClient配置
 #zookeeper:
