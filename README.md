@@ -267,6 +267,7 @@
 1. 添加`curator client`和`spring-boot-zookeeper-client-starter`的依赖
 
    ```xml
+   <!-- 添加至repositories标签中 -->
    <dependency>
        <groupId>com.eugene.sumarry</groupId>
        <artifactId>spring-boot-zookeeper-client-starter</artifactId>
@@ -290,6 +291,15 @@
        <artifactId>curator-client</artifactId>
        <version>2.10.0</version>
    </dependency>
+   
+   <!-- 添加至project标签中 -->
+   <repositories>
+       <repository>
+           <id>github</id>
+           <name>avengerEug</name>
+           <url>https://raw.github.com/AvengerEug/maven-repository/master</url>
+       </repository>
+   </repositories>
    ```
 
 2. yml或properties文件中添加如下配置:
@@ -313,6 +323,7 @@
 1. 添加`ZkClient`和`spring-boot-zookeeper-client-starter`的依赖
 
    ```xml
+   <!-- 添加至repositories标签中 -->
    <dependency>
        <groupId>com.eugene.sumarry</groupId>
        <artifactId>spring-boot-zookeeper-client-starter</artifactId>
@@ -324,6 +335,15 @@
        <artifactId>zkclient</artifactId>
        <version>0.10</version>
    </dependency>	
+   
+   <!-- 添加至project标签中 -->
+   <repositories>
+       <repository>
+           <id>github</id>
+           <name>avengerEug</name>
+           <url>https://raw.github.com/AvengerEug/maven-repository/master</url>
+       </repository>
+   </repositories>
    ```
 
 2. yml或properties文件中添加如下配置:
@@ -348,6 +368,7 @@
 1. 添加`zookeeper`和`spring-boot-zookeeper-client-starter`的依赖
 
    ```xml
+   <!-- 添加至repositories标签中 -->
    <dependency>
        <groupId>com.eugene.sumarry</groupId>
        <artifactId>spring-boot-zookeeper-client-starter</artifactId>
@@ -359,6 +380,15 @@
        <artifactId>zookeeper</artifactId>
        <version>3.4.6</version>
    </dependency>
+   
+   <!-- 添加至project标签中 -->
+   <repositories>
+       <repository>
+           <id>github</id>
+           <name>avengerEug</name>
+           <url>https://raw.github.com/AvengerEug/maven-repository/master</url>
+       </repository>
+   </repositories>
    ```
 
 2. 新建`ZookeeperInitWatcher.java`类，并实现`org.apache.zookeeper.Watcher`接口作为默认监听器。如下:
@@ -409,6 +439,7 @@
 * 因为springboot中内嵌了`sl4j`的绑定器和具体的日志实现类(`log4j`)，而zookeeper原生客户端的jar包也包含了`sl4j`和`log4j`。所以建议修改zookeeper的jar包依赖如下(去除zookeeper jar包中依赖的日志体系):
 
   ```xml
+  <!-- 添加至repositories标签中 -->
   <dependency>
       <groupId>org.apache.zookeeper</groupId>
       <artifactId>zookeeper</artifactId>
@@ -428,6 +459,6 @@
           </exclusion>
       </exclusions>
   </dependency>
-  ```
-
+```
+  
   
