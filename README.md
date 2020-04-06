@@ -441,7 +441,95 @@
    @EnableZookeeperClient
    ```
 
-### 6.4 注意
+### 6.4 如何操作zookeeper
+
+* 将使用spring常用@Autowired注解注入
+
+  ```java
+  @Service
+  public class UserService {
+      @Autowired
+      private ZookeeperClient zookeeperClient
+      
+      public void createEphNode() {
+          try {
+              // 创建临时节点
+              zookeeperClient.createEphNode("/test", "value");
+          } catch (Exception e) {
+              e.printStackTrace();
+          }
+      }
+  }
+  ```
+
+* 使用spring上下文获取
+
+  ```java
+  AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.java);
+  ZookeeperClient zookeeperClient = context.getBean(ZookeeperClient.class);
+  try {
+      zookeeperClient.createEphNode("/test", "value");
+  } catch (Exception e) {
+      e.printStackTrace();
+  }
+  ```
+
+* 具体的api参考**ZookeeperClient**类
+
+  ```java
+  public interface ZookeeperClient {
+      String createPerNode(String var1) throws Exception;
+  
+      String createPerNode(String var1, String var2) throws Exception;
+  
+      String createPerSeqNode(String var1) throws Exception;
+  
+      String createPerSeqNode(String var1, String var2) throws Exception;
+  
+      String createEphNode(String var1) throws Exception;
+  
+      String createEphNode(String var1, String var2) throws Exception;
+  
+      String createEphSeqNode(String var1) throws Exception;
+  
+      String createEphSeqNode(String var1, String var2) throws Exception;
+  
+      void deleteNode(String var1) throws Exception;
+  
+      Stat changeNode(String var1, String var2) throws Exception;
+  
+      List<String> findChildren(String var1) throws Exception;
+  
+      default void watchDesignationNodeUsingCurator(String path, CuratorWatcher curatorWatcher) throws Exception {
+      }
+  
+      default void watchTreeCacheNodeUsingCurator(String parentPath, TreeCacheListener treeCacheListener) throws Exception {
+      }
+  
+      default void watchChildrenNodeUsingCurator(String parentPath, PathChildrenCacheListener pathChildrenCacheListener) throws Exception {
+      }
+  
+      default void watchDesignationNodeUsingZKClient(String path, IZkDataListener iZkDataListener) throws Exception {
+      }
+  
+      default void watchChildrenNodeUsingZKClient(String parentPath, IZkChildListener iZkChildListener) throws Exception {
+      }
+  
+      default void watchChildrenNodeUsingNative(String parentPath, Watcher watcher) throws Exception {
+      }
+  
+      default void watchDesignationNodeUsingNative(String path, Watcher watcher) throws Exception {
+      }
+  
+      default <T> T checkExist(String path) throws Exception {
+          return null;
+      }
+  
+      void close() throws InterruptedException;
+  }
+  ```
+
+### 6.5 注意
 
 * **同上述约定，三种客户端的加载顺序为`curator`, `zkclient`, `native client`**。若上述的依赖包都存在，则会按照如下顺序初始化客户端
 
